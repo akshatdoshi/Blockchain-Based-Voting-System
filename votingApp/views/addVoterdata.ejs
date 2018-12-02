@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title> <%=page_title%></title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="/../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="/../vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="/../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./routers/alert.js"/>
+   <script>
+
+
+   </script>
+
+</head>
+
+<body>
+<p id="sms"></p>
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Voting System</a>
+            </div>
+
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                      <li>
+                          <a href="Dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                      </li>
+                      <li>
+                          <a href="Addvoterdata"><i class="fa fa-table fa-fw"></i> Add Voter</a>
+                      </li>
+                      <li>
+                          <a href="VoterData"><i class="fa fa-table fa-fw"></i> Voter Data</a>
+                      </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Voter Registration Form
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form role="form" method="post" action="/Addvoterdata">
+                                      <div class="form-group">
+                                        <select id="addressList">
+                                          <option value="0">Please select address</option>
+                                          <% if(data.length){
+
+                                              for(var i = 0;i < data.length;i++) { %>
+                                                 <option value='<%=data[i].address%>'><%=data[i].address%></option>
+                                                 <% }
+
+                                                }else{ %>
+                                                    <option>No Address</option>
+                                          <% } %>
+                                        </select>
+                                      </div>
+
+                                        <ul class="nav">
+                                            <li>
+                                              <div class="form-group">
+                                                  <label>Voter Address</label>
+                                                  <input class="form-control" id="voterAddress" name="voterAddress" placeholder="voter address">
+                                              </div>
+                                            <li>
+                                            <li>
+                                                <div class="form-group">
+                                                    <label>Voter Fast Name</label>
+                                                    <input class="form-control" id="voterfastName" name="voterfastName" placeholder="Enter voter fast name">
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="form-group">
+                                                    <label>Voter Last Name</label>
+                                                    <input class="form-control" id="voterlastName" name="voterlastName" placeholder="Enter voter last name">
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="form-group">
+                                                    <label>Gender </label>
+                                                    <select id="genderList" name="voterGender">
+														                             <option value="" selected>Please select.</option>
+														                             <option value="1">Male</option>
+														                             <option value="2">Female</option>
+														                             
+													                         </select>
+                                                </div>
+                                            </li>
+                                                <LI>
+                                                        <button type="submit" id="submitData" class="btn btn-default">Submit</button>
+                                                        <button type="reset" id="resetData" class="btn btn-default">Reset</button>
+                                                </LI>
+                                        </ul>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="/../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="/../dist/js/sb-admin-2.js"></script>
+    <script>
+     var voterAddress = document.getElementById("voterAddress");
+
+      $("#addressList").change(function(){
+        voterAddress.value = $("#addressList option:selected").val();
+       });
+    </script>
+</body>
+
+</html>

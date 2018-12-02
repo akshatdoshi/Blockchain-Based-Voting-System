@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>E-voting</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="./webApp/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="./webApp/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="./webApp/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="./webApp/vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="./webApp/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="./webApp/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./webApp/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index1.html">Add Voter Information</a>
+            </div>
+
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+						<li>
+                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="addVoterdata.html"><i class="fa fa-table fa-fw"></i> Add Voter</a>
+                        </li>
+                        <li>
+                            <a href="tables.html"><i class="fa fa-table fa-fw"></i> Voter Data</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Voter Registration Form
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form role="form">
+                                      <div class="form-group">
+                                        <select id="addressList">
+                                        </select>
+                                      </div>
+                                        <div class="form-group">
+                                            <label>Enter voter Address</label>
+                                            <input class="form-control" id="voterAddress" placeholder="voter address" disabled>
+                                        </div>
+
+                                        <ul class="nav">
+
+                                            <li>
+                                                <div class="form-group">
+                                                    <label>Voter Name</label>
+                                                    <input class="form-control" id="voterName" placeholder="Enter voter name">
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="form-group">
+                                                    <label>Gender </label>
+                                                    <select id="genderList">
+														                             <option value="" selected>Please select.</option>
+														                             <option value="1">Male</option>
+														                             <option value="2">female</option>
+														                             <option value="0">unique</option>
+													                         </select>
+                                                </div>
+                                            </li>
+                                                <LI>
+                                                        <button type="button" id="submitData" onclick="addvoter();" class="btn btn-default">Submit</button>
+                                                        <button type="reset" id="resetData" class="btn btn-default">Reset</button>
+                                                </LI>
+                                        </ul>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <script>
+      var web3 = new Web3(new Web3.providers.HttpProvider ("http://localhost:8545"));
+      web3.eth.defaultAccount = web3.eth.accounts[0];
+      console.log(web3);
+     var electionDB = web3.eth.contract([
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "candidates",
+    "outputs": [
+      {
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "partyName",
+        "type": "string"
+      },
+      {
+        "name": "voteCount",
+        "type": "uint256"
+      },
+      {
+        "name": "parcetange",
+        "type": "uint256"
+      },
+      {
+        "name": "marginWL",
+        "type": "uint256"
+      },
+      {
+        "name": "winloss",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "VoterData",
+    "outputs": [
+      {
+        "name": "voterID",
+        "type": "uint256"
+      },
+      {
+        "name": "voterAddress",
+        "type": "address"
+      },
+      {
+        "name": "voterFastName",
+        "type": "string"
+      },
+      {
+        "name": "voterLastName",
+        "type": "string"
+      },
+      {
+        "name": "voterGender",
+        "type": "uint256"
+      },
+      {
+        "name": "voterVoted",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_candidateId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "_candidateName",
+        "type": "string"
+      }
+    ],
+    "name": "addCandidateEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_voterId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "_voterAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "_voterFastName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "_voterLastName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "_voterGender",
+        "type": "uint256"
+      }
+    ],
+    "name": "addVoterEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_errorLog",
+        "type": "string"
+      }
+    ],
+    "name": "errorLog",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_voterStatus",
+        "type": "string"
+      }
+    ],
+    "name": "votingLog",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_winName",
+        "type": "string"
+      }
+    ],
+    "name": "winerName",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "name": "_partyName",
+        "type": "string"
+      }
+    ],
+    "name": "addCandidate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_Address",
+        "type": "address"
+      },
+      {
+        "name": "_FName",
+        "type": "string"
+      },
+      {
+        "name": "_LName",
+        "type": "string"
+      },
+      {
+        "name": "_Gender",
+        "type": "uint256"
+      }
+    ],
+    "name": "addVoterData",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_candidateId",
+        "type": "uint256"
+      },
+      {
+        "name": "_voterAddress",
+        "type": "address"
+      }
+    ],
+    "name": "vote",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "winer",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]);
+var Election = electionDB.at("0xfc0717fdfcb016a858ce6e4b13916dd792e3b571");
+
+
+      var listAccount = web3.eth.accounts;
+
+
+      var voterAddress = document.getElementById("voterAddress");
+      var voterName = document.getElementById("voterName");
+
+      var option = '';
+      option ='<option value="">plese select address</option>';
+      for (var i=0;i<listAccount.length;i++){
+         option += '<option value="'+ listAccount[i] + '">' + listAccount[i] +'</option>';
+       }
+       $('#addressList').append(option);
+
+       $("#addressList").change(function(){
+         voterAddress.value = $("#addressList option:selected").val();
+        });
+
+        function genderList() {
+          var getGender;
+            var index = document.getElementById("genderList").selectedIndex;
+            var option = document.getElementById("genderList").options;
+
+          return option[index].value;
+      }
+      Election.addVoterData(function(error,result){
+        if (!error) {
+               $("#instructor").html(result[0]+' ('+result[1]+' years old)');
+           } else{
+                console.log(error);
+           }
+
+      });
+
+    </script>
+    <!-- jQuery -->
+
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="./webApp/vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="./webApp/dist/js/sb-admin-2.js"></script>
+
+</body>
+
+</html>

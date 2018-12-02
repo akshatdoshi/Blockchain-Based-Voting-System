@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Voting system</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="./node_modules/web3/dist/web3.min.js"></script>
+  <script>
+		function Evoting(voterID){
+		  if(voterID == 1){
+          var selectedCountry = $("#addressList option:selected").val();
+		  alert("BJP" + selectedCountry);
+		  lockButton();
+		  }else if(voterID == 2){
+		  alert("APP");
+		  lockButton();
+		  }else if(voterID == 3){
+		  alert("Congress");
+		  lockButton();
+		  } else {
+		  alert("Erro");
+		  }
+		}
+
+	/*function lockButton(){
+			$("#bjpVote").prop('disabled', true);
+			$("#aapVote").prop('disabled', true);
+			$("#congVote").prop('disabled', true);
+	}*/
+  </script>
+</head>
+<body>
+<h4>Your Accounts</h4>
+
+    <hr />
+    <select id="addressList">
+    </select>
+
+
+<div class="container">
+  <h2>E-Voting system on blockchain</h2>
+  <p></p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Symbol</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><h2>BJP</h2></td>
+        <td><img src="./votingApp/images/BJP.jpg" class="img-rounded" alt="Cinque Terre" width="20%" height="20%"></td>
+        <td><button type="button" class="btn btn-primary btn-lg" id="bjpVote" onclick="Evoting(1);"> Vote </button></td>
+      </tr>
+       <tr>
+        <td><h2>AAP</h2></td>
+        <td><img src="./votingApp/images/AAP.jpg" class="img-rounded" alt="Cinque Terre" width="20%" height="20%"></td>
+        <td><button type="button" class="btn btn-primary btn-lg" id="aapVote" onclick="Evoting(2);"> Vote </button></td>
+      </tr>
+	   <tr>
+        <td><h2>Congress</h2></td>
+        <td><img src="./votingApp/images/congress.jpg" class="img-rounded" alt="Cinque Terre" width="20%" height="20%"></td>
+        <td><button type="button" class="btn btn-primary btn-lg" id="congVote" onclick="Evoting(3);"> Vote </button></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+ <script type="text/javascript">
+    var web3 = new Web3(new Web3.providers.HttpProvider ("http://localhost:8545"));
+     web3.eth.defaultAccount = web3.eth.accounts[0];
+     var listAccount = web3.eth.accounts;
+     var option = '';
+     for (var i=0;i<listAccount.length;i++){
+        option += '<option value="'+ listAccount[i] + '">' + listAccount[i] +'</option>';
+      }
+      $('#addressList').append(option);
+
+     var selectedCountry;
+     $("#addressList").change(function(){
+       selectedCountry = $("#addressList option:selected").val();
+      });
+
+      var obj = {
+          table: []
+        };
+      var votingDB = web3.eth.contract([
+        {
+          "constant": true,
+          "inputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "candidates",
+          "outputs": [
+            {
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "voteCount",
+              "type": "uint256"
+            },
+            {
+              "name": "parcetange",
+              "type": "uint256"
+            },
+            {
+              "name": "marginWL",
+              "type": "uint256"
+            },
+            {
+              "name": "winloss",
+              "type": "string"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "constant": true,
+          "inputs": [
+            {
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "VoterData",
+          "outputs": [
+            {
+              "name": "voterID",
+              "type": "uint256"
+            },
+            {
+              "name": "voterAddress",
+              "type": "address"
+            },
+            {
+              "name": "voterName",
+              "type": "string"
+            },
+            {
+              "name": "voterGender",
+              "type": "uint256"
+            },
+            {
+              "name": "voterVoted",
+              "type": "bool"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "numofvote",
+              "type": "uint256"
+            }
+          ],
+          "name": "winerName",
+          "type": "event"
+        },
+        {
+          "constant": false,
+          "inputs": [
+            {
+              "name": "_name",
+              "type": "string"
+            }
+          ],
+          "name": "addCandidate",
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "constant": false,
+          "inputs": [
+            {
+              "name": "_voterAddress",
+              "type": "address"
+            },
+            {
+              "name": "_voterName",
+              "type": "string"
+            },
+            {
+              "name": "_voterGender",
+              "type": "uint256"
+            }
+          ],
+          "name": "addVoterData",
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "constant": false,
+          "inputs": [
+            {
+              "name": "_candidateId",
+              "type": "uint256"
+            },
+            {
+              "name": "_voterAddress",
+              "type": "address"
+            }
+          ],
+          "name": "vote",
+          "outputs": [
+            {
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "constant": false,
+          "inputs": [],
+          "name": "winer",
+          "outputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "constant": true,
+          "inputs": [
+            {
+              "name": "_id",
+              "type": "uint256"
+            }
+          ],
+          "name": "getCondidateById",
+          "outputs": [
+            {
+              "name": "",
+              "type": "string"
+            },
+            {
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "name": "",
+              "type": "uint256"
+            },
+            {
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ]);
+      var Election = votingDB.at("0xf83cc8a4b7f90a2e2cdb504d146b4c305f92fdad");
+    </script>
+</body>
+</html>
